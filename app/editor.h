@@ -54,7 +54,6 @@ private:
   int _hoverPortElm_id;
   int _hoverPort_nbr;
   ElementEditor *_elementEditor;
-
   bool markingSelectionBox;
   QGraphicsRectItem *selectionRect;
   QPointF selectionStartPoint;
@@ -96,7 +95,6 @@ public:
   QUndoStack* getUndoStack( ) const;
   Scene* getScene( ) const;
   void buildSelectionRect( );
-  bool loadBox( Box *box, QString fname );
 
   void handleHoverPort( );
   void releaseHoverPort( );
@@ -109,6 +107,8 @@ public:
   void contextMenu( QPoint screenPos );
   void updateVisibility( );
   QPointF getMousePos( ) const;
+
+  void updateBoxes( QString fname );
 
 
   ElementEditor* getElementEditor( ) const;

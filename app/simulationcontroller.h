@@ -14,7 +14,6 @@ class SimulationController : public QObject {
 public:
   explicit SimulationController( Scene *scn );
   ~SimulationController( );
-  static QVector< GraphicElement* > sortElements( QVector< GraphicElement* > elms );
 signals:
 
 public slots:
@@ -27,9 +26,7 @@ private:
   Scene *scene;
   QTimer timer;
   QVector< GraphicElement* > sortedElements;
-  static int calculatePriority( GraphicElement *elm,
-                                QMap< GraphicElement*, bool > &beingvisited,
-                                QMap< GraphicElement*, int > &priority );
+
 };
 
 #endif /* SIMULATIONCONTROLLER_H */

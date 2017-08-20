@@ -450,6 +450,10 @@ bool ElementEditor::eventFilter( QObject *obj, QEvent *event ) {
       elm->setSelected( true );
       elm->ensureVisible( );
       wgt->setFocus( );
+      QLineEdit *lineEdit = dynamic_cast< QLineEdit* >( wgt );
+      if( lineEdit ) {
+        lineEdit->selectAll( );
+      }
       event->accept( );
       return( true );
     }

@@ -59,7 +59,12 @@ SOURCES += \
     $$PWD/app/itemwithid.cpp \
     $$PWD/app/simplewaveform.cpp \
     $$PWD/app/thememanager.cpp \
-    $$PWD/app/element/buzzer.cpp
+    $$PWD/app/element/buzzer.cpp \
+    $$PWD/app/util.cpp \
+    $$PWD/app/element/boxsequential.cpp \
+    $$PWD/app/element/boxnonsequential.cpp \
+    $$PWD/app/element/boxmanager.cpp \
+    $$PWD/app/element/boxprototype.cpp
 
 HEADERS  +=  \
     $$PWD/app/common.h \
@@ -111,7 +116,12 @@ HEADERS  +=  \
     $$PWD/app/itemwithid.h \
     $$PWD/app/simplewaveform.h \
     $$PWD/app/thememanager.h \
-    $$PWD/app/element/buzzer.h
+    $$PWD/app/element/buzzer.h \
+    $$PWD/app/util.h \
+    $$PWD/app/element/boxsequential.h \
+    $$PWD/app/element/boxnonsequential.h \
+    $$PWD/app/element/boxmanager.h \
+    $$PWD/app/element/boxprototype.h
 
 INCLUDEPATH += \
     $$PWD/app \

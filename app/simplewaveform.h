@@ -2,6 +2,7 @@
 #define SIMPLEWAVEFORM_H
 
 #include "editor.h"
+#include "util.h"
 
 #include <QChart>
 #include <QChartView>
@@ -16,19 +17,14 @@ namespace Ui {
 
 class SimpleWaveform : public QDialog {
   Q_OBJECT
-  enum class SortingKind { INCREASING, DECREASING, POSITION };
 
 public:
   explicit SimpleWaveform( Editor *editor, QWidget *parent = 0 );
   ~SimpleWaveform( );
 
   void showWaveform( );
-  static void sortElements( QVector< GraphicElement* > elements,
-                            QVector< GraphicElement* > &inputs,
-                            QVector< GraphicElement* > &outputs,
-                            SortingKind sorting );
 
-  static bool saveToTxt(QTextStream &outStream , Editor * editor);
+  static bool saveToTxt( QTextStream &outStream, Editor *editor );
 private slots:
   void on_radioButton_Position_clicked( );
 
@@ -44,7 +40,7 @@ private:
   QChartView *chartView;
   Editor *editor;
 
-  SortingKind sortingKind;
+  Util::SortingKind sortingKind;
 };
 
 #endif /* SIMPLEWAVEFORM_H */

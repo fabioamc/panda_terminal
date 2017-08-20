@@ -44,14 +44,14 @@ void Scene::setDots( const QPen &dots ) {
 }
 
 
-QVector <GraphicElement *> Scene::getVisibleElements( ) {
+QVector< GraphicElement* > Scene::getVisibleElements( ) {
   QGraphicsView *graphicsView = views( ).first( );
-  if(!graphicsView->isActiveWindow()){
-    graphicsView = views().last();
+  if( !graphicsView->isActiveWindow( ) ) {
+    graphicsView = views( ).last( );
   }
   QRectF visibleRect = graphicsView->mapToScene( graphicsView->viewport( )->geometry( ) ).boundingRect( );
 
-  return getElements( visibleRect );
+  return( getElements( visibleRect ) );
 }
 
 QVector< GraphicElement* > Scene::getElements( ) {
@@ -62,7 +62,7 @@ QVector< GraphicElement* > Scene::getElements( QRectF rect ) {
   QVector< GraphicElement* > elements;
   QList< QGraphicsItem* > myItems = items( rect );
   for( QGraphicsItem *item : myItems ) {
-    GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+    GraphicElement *elm = dynamic_cast< GraphicElement* >( item );
     if( elm ) {
       elements.append( elm );
     }
@@ -87,7 +87,7 @@ QVector< GraphicElement* > Scene::selectedElements( ) {
   QList< QGraphicsItem* > myItems = selectedItems( );
   for( QGraphicsItem *item : myItems ) {
     if( item->type( ) == GraphicElement::Type ) {
-      GraphicElement *elm = qgraphicsitem_cast< GraphicElement* >( item );
+      GraphicElement *elm = dynamic_cast< GraphicElement* >( item );
       if( elm ) {
         elements.append( elm );
       }

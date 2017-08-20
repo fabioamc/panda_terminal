@@ -6,17 +6,17 @@
 #include "scene.h"
 #include "simulationcontroller.h"
 
-#include <QFileInfo>
-#include <QFileSystemWatcher>
-
 class Editor;
+class BoxPrototype;
+class BoxManager;
 
 class Box : public GraphicElement {
   Q_OBJECT
 
   friend class CodeGenerator;
+  friend class BoxManager;
 public:
-  Box( Editor *editor, QGraphicsItem *parent = 0 );
+  Box( QGraphicsItem *parent = 0 );
   virtual ~Box( );
   /* GraphicElement interface */
   virtual ElementType elementType( ) {
@@ -28,33 +28,27 @@ public:
   void save( QDataStream &ds );
   void load( QDataStream &ds, QMap< quint64, QNEPort* > &portMap, double version );
   void updateLogic( );
-  void loadFile( QString fname );
+
   QString getFile( ) const;
 
   QString getParentFile( ) const;
   void setParentFile( const QString &value );
 
-
-  QFileInfo findFile( QString fname );
-
   Box* getParentBox( ) const;
   void setParentBox( Box *value );
 
   void verifyRecursion( QString fname );
-  QVector< GraphicElement* > getElements( ) const;
+
+  BoxPrototype* getBoxImpl( ) const;
+  void setBoxImpl( BoxPrototype *boxImpl );
 
 private:
-  Editor *editor;
   QString m_file;
-  QVector< QNEOutputPort* > inputMap;
-  QVector< QNEInputPort* > outputMap;
-  QFileSystemWatcher watcher;
-  bool isAskingToReload;
-  QString parentFile;
-  Box *parentBox;
-  QVector< GraphicElement* > elements;
-public slots:
-  void fileChanged( QString file );
+
+  QString m_parentFile;
+  Box *m_parentBox;
+
+  BoxPrototype *m_boxImpl;
 
   /* QGraphicsItem interface */
 protected:

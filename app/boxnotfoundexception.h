@@ -6,8 +6,7 @@ class Box;
 class BoxNotFoundException : public std::runtime_error {
   Box *m_box;
 public:
-  BoxNotFoundException( std::string message, Box *m_box );
-  Box* getBox( ) const;
+  BoxNotFoundException( std::string message );
 };
 
 #endif /* BOXNOTFOUNDEXCEPTION_H */

@@ -5,9 +5,9 @@
 
 #include <element/clock.h>
 
-#include <nodes/qneconnection.h>
-
+#include "util.h"
 #include <QStack>
+#include <nodes/qneconnection.h>
 
 SimulationController::SimulationController( Scene *scn ) : QObject( dynamic_cast< QObject* >( scn ) ), timer( this ) {
   scene = scn;
@@ -19,47 +19,6 @@ SimulationController::~SimulationController( ) {
 
 }
 
-int SimulationController::calculatePriority( GraphicElement *elm,
-                                             QMap< GraphicElement*, bool > &beingvisited,
-                                             QMap< GraphicElement*, int > &priority ) {
-  if( !elm ) {
-    return( 0 );
-  }
-  if( beingvisited.contains( elm ) && ( beingvisited[ elm ] == true ) ) {
-
-    return( 0 );
-  }
-  if( priority.contains( elm ) ) {
-    return( priority[ elm ] );
-  }
-  beingvisited[ elm ] = true;
-  int max = 0;
-  for( QNEPort *port : elm->outputs( ) ) {
-    for( QNEConnection *conn : port->connections( ) ) {
-      QNEPort *sucessor = conn->otherPort( port );
-      if( sucessor ) {
-        max = qMax( calculatePriority( sucessor->graphicElement( ), beingvisited, priority ), max );
-      }
-    }
-  }
-  int p = max + 1;
-  priority[ elm ] = p;
-  beingvisited[ elm ] = false;
-  return( p );
-}
-
-QVector< GraphicElement* > SimulationController::sortElements( QVector< GraphicElement* > elms ) {
-  QMap< GraphicElement*, bool > beingvisited;
-  QMap< GraphicElement*, int > priority;
-  for( GraphicElement *elm : elms ) {
-    calculatePriority( elm, beingvisited, priority );
-  }
-  std::sort( elms.begin( ), elms.end( ), [ priority ]( GraphicElement *e1, GraphicElement *e2 ) {
-    return( priority[ e2 ] < priority[ e1 ] );
-  } );
-
-  return( elms );
-}
 
 void SimulationController::update( ) {
   QVector< GraphicElement* > elements = scene->getElements( );
@@ -95,5 +54,5 @@ void SimulationController::start( ) {
 void SimulationController::reSortElms( ) {
   COMMENT( "Re-sorting elements", 3 );
   QVector< GraphicElement* > elements = scene->getElements( );
-  sortedElements = sortElements( elements );
+  sortedElements = Util::sortElements( elements );
 }

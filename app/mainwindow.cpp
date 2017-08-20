@@ -102,7 +102,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::M
   rboxController = new RecentFilesController( "recentBoxes", this );
 
   QShortcut *shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-  connect( shortcut, SIGNAL( activated( ) ), ui->lineEdit, SLOT( setFocus( ) ) );
+  connect( shortcut, SIGNAL(activated()), ui->lineEdit, SLOT(setFocus()) );
   ui->graphicsView->setCacheMode( QGraphicsView::CacheBackground );
   firstResult = nullptr;
   updateRecentBoxes( );
@@ -234,9 +234,9 @@ void MainWindow::on_actionRotate_left_triggered( ) {
 bool MainWindow::open( const QString &fname ) {
   QFile fl( fname );
   if( !fl.exists( ) ) {
-    QMessageBox::warning( this, tr( "Error!" ), tr( "File \"%1\" does not exists!" ).arg(
+    QMessageBox::warning( this, tr( "Error!" ), tr( "File \"%1\" does not exist!" ).arg(
                             fname ), QMessageBox::Ok, QMessageBox::NoButton );
-    std::cerr << tr( "Error: This file does not exists: " ).toStdString( ) << fname.toStdString( ) << std::endl;
+    std::cerr << tr( "Error: This file could not be found.: " ).toStdString( ) << fname.toStdString( ) << std::endl;
     return( false );
   }
   if( fl.open( QFile::ReadOnly ) ) {
@@ -256,7 +256,7 @@ bool MainWindow::open( const QString &fname ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return( false );
   }
   fl.close( );
@@ -428,7 +428,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   QFile fl( fname );
   if( !fl.exists( ) ) {
-    std::cerr << tr( "Error: This file does not exists: " ).toStdString( ) << fname.toStdString( ) << std::endl;
+    std::cerr << tr( "Error: This file could not be found.: " ).toStdString( ) << fname.toStdString( ) << std::endl;
     return;
   }
   if( fl.open( QFile::ReadOnly ) ) {
@@ -436,7 +436,7 @@ void MainWindow::on_actionOpen_Box_triggered( ) {
   }
   else {
     std::cerr << tr( "Could not open file in ReadOnly mode : " ).toStdString( ) << fname.toStdString( ) << "." <<
-    std::endl;
+      std::endl;
     return;
   }
   fl.close( );
@@ -536,7 +536,7 @@ bool MainWindow::ExportToArduino( QString fname ) {
     if( !fname.endsWith( ".ino" ) ) {
       fname.append( ".ino" );
     }
-    elements = SimulationController::sortElements( elements );
+    elements = Util::sortElements( elements );
 
 
     CodeGenerator arduino( QDir::home( ).absoluteFilePath( fname ), elements );

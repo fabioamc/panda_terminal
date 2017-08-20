@@ -1,11 +1,18 @@
 #include "testelements.h"
 #include <QDebug>
 
+#include "and.h"
+#include "boxmanager.h"
+#include "dflipflop.h"
+#include "inputgnd.h"
+#include "inputvcc.h"
+#include "or.h"
 #include <box.h>
 #include <demux.h>
 #include <dlatch.h>
 #include <editor.h>
 #include <inputbutton.h>
+#include <iostream>
 #include <iostream>
 #include <jkflipflop.h>
 #include <jklatch.h>
@@ -15,13 +22,6 @@
 #include <srflipflop.h>
 #include <tflipflop.h>
 #include <tlatch.h>
-
-#include "and.h"
-#include "dflipflop.h"
-#include "inputgnd.h"
-#include "inputvcc.h"
-#include "or.h"
-#include <iostream>
 
 TestElements::TestElements( QObject *parent ) : QObject( parent ) {
 
@@ -626,11 +626,11 @@ void TestElements::testBox( ) {
   Editor *editor = new Editor( this );
   InputButton *btn = new InputButton( );
   Led *led = new Led( );
-  Box *box = new Box( editor );
+  Box *box = new Box( );
   editor->getScene( )->addItem( btn );
   editor->getScene( )->addItem( led );
   editor->getScene( )->addItem( box );
-  box->loadFile( testFile( "jkflipflop.panda" ) );
+  BoxManager::globalMngr->loadFile( box, testFile( "jkflipflop.panda" ) );
   box->updateLogic( );
 
   QCOMPARE( ( int ) box->inputSize( ), 5 );
@@ -697,7 +697,7 @@ void TestElements::testBoxes( ) {
   QFileInfoList files = examplesDir.entryInfoList( entries );
   for( QFileInfo f : files ) {
     qDebug( ) << "FILE: " << f.absoluteFilePath( );
-    Box box( &editor );
-    box.loadFile( f.absoluteFilePath( ) );
+    Box box;
+    BoxManager::globalMngr->loadFile( &box, f.absoluteFilePath( ) );
   }
 }

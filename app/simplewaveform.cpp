@@ -39,7 +39,7 @@ SimpleWaveform::SimpleWaveform( Editor *editor, QWidget *parent ) :
   setWindowTitle( "Simple WaveForm - WaveDolphin Beta" );
   setWindowFlags( Qt::Window );
   setModal( true );
-  sortingKind = SortingKind::INCREASING;
+  sortingKind = Util::INCREASING;
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "SimpleWaveform" );
@@ -56,67 +56,12 @@ SimpleWaveform::~SimpleWaveform( ) {
   delete ui;
 }
 
-void SimpleWaveform::sortElements( QVector< GraphicElement* > elements,
-                                   QVector< GraphicElement* > &inputs,
-                                   QVector< GraphicElement* > &outputs,
-                                   SortingKind sorting ) {
-  elements = SimulationController::sortElements( elements );
-  for( GraphicElement *elm : elements ) {
-    if( elm && ( elm->type( ) == GraphicElement::Type ) ) {
-      switch( elm->elementType( ) ) {
-          case ElementType::BUTTON:
-          case ElementType::SWITCH:
-          case ElementType::CLOCK: {
-          inputs.append( elm );
-          break;
-        }
-          case ElementType::DISPLAY:
-          case ElementType::LED: {
-          outputs.append( elm );
-          break;
-        }
-          default:
-          break;
-      }
-    }
-  }
-  std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-  } );
-  std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).ry( ) < elm2->pos( ).ry( ) );
-  } );
-
-  std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-  } );
-  std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-    return( elm1->pos( ).rx( ) < elm2->pos( ).rx( ) );
-  } );
-  if( sorting == SortingKind::INCREASING ) {
-    std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
-    } );
-    std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) <= 0 );
-    } );
-  }
-  else if( sorting == SortingKind::DECREASING ) {
-    std::stable_sort( inputs.begin( ), inputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
-    } );
-    std::stable_sort( outputs.begin( ), outputs.end( ), [ ]( GraphicElement *elm1, GraphicElement *elm2 ) {
-      return( strcasecmp( elm1->getLabel( ).toUtf8( ), elm2->getLabel( ).toUtf8( ) ) >= 0 );
-    } );
-  }
-}
-
 bool SimpleWaveform::saveToTxt( QTextStream &outStream, Editor *editor ) {
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
 
-  sortElements( elements, inputs, outputs, SortingKind::INCREASING );
+  elements = Util::sortElements( elements, inputs, outputs, Util::INCREASING );
   if( elements.isEmpty( ) || inputs.isEmpty( ) || outputs.isEmpty( ) ) {
     return( false );
   }
@@ -194,17 +139,17 @@ void SimpleWaveform::showWaveform( ) {
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
   if( settings.contains( "sortingType" ) ) {
-    sortingKind = ( SortingKind ) settings.value( "sortingType" ).toInt( );
+    sortingKind = ( Util::SortingKind ) settings.value( "sortingType" ).toInt( );
   }
   settings.endGroup( );
   switch( sortingKind ) {
-      case SortingKind::DECREASING:
+      case Util::DECREASING:
       ui->radioButton_Decreasing->setChecked( true );
       break;
-      case SortingKind::INCREASING:
+      case Util::INCREASING:
       ui->radioButton_Increasing->setChecked( true );
       break;
-      case SortingKind::POSITION:
+      case Util::POSITION:
       ui->radioButton_Position->setChecked( true );
       break;
   }
@@ -216,11 +161,11 @@ void SimpleWaveform::showWaveform( ) {
   sc->stop( );
 
   QVector< GraphicElement* > elements = editor->getScene( )->getElements( );
+  qDebug( ) << elements.size( );
   QVector< GraphicElement* > inputs;
   QVector< GraphicElement* > outputs;
-
-  sortElements( elements, inputs, outputs, sortingKind );
-
+  qDebug( ) << elements.size( );
+  elements = Util::sortElements( elements, inputs, outputs, sortingKind );
   if( elements.isEmpty( ) ) {
     QMessageBox::warning( parentWidget( ), tr( "Error" ), tr( "Could not find any input for the simulation" ) );
     return;
@@ -335,7 +280,7 @@ void SimpleWaveform::on_radioButton_Position_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingKind = SortingKind::POSITION;
+  sortingKind = Util::POSITION;
   settings.setValue( "sortingType", ( int ) sortingKind );
   settings.endGroup( );
 
@@ -346,7 +291,7 @@ void SimpleWaveform::on_radioButton_Increasing_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingKind = SortingKind::INCREASING;
+  sortingKind = Util::INCREASING;
   settings.setValue( "sortingType", ( int ) sortingKind );
   settings.endGroup( );
 
@@ -357,7 +302,7 @@ void SimpleWaveform::on_radioButton_Decreasing_clicked( ) {
   QSettings settings( QSettings::IniFormat, QSettings::UserScope,
                       QApplication::organizationName( ), QApplication::applicationName( ) );
   settings.beginGroup( "waveform" );
-  sortingKind = SortingKind::DECREASING;
+  sortingKind = Util::DECREASING;
   settings.setValue( "sortingType", ( int ) sortingKind );
   settings.endGroup( );
 

@@ -1,12 +1,13 @@
 #include "codegenerator.h"
 
+#include "util.h"
 #include <box.h>
 #include <clock.h>
 #include <editor.h>
 #include <qneconnection.h>
 #include <stdexcept>
-CodeGenerator::CodeGenerator( QString fileName,
-                              const QVector< GraphicElement* > &elements ) : file( fileName ), elements( elements ) {
+CodeGenerator::CodeGenerator( QString fileName, const QVector< GraphicElement* > &elements ) : file( fileName ),
+  elements( elements ) {
   if( !file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
     return;
   }
@@ -123,16 +124,19 @@ void CodeGenerator::declareOutputs( ) {
 void CodeGenerator::declareAuxVariablesRec( const QVector< GraphicElement* > &elms, bool isBox ) {
   for( GraphicElement *elm : elms ) {
     if( elm->elementType( ) == ElementType::BOX ) {
-      Box *box = qgraphicsitem_cast< Box* >( elm );
-      if( box ) {
-        out << "// " << box->getLabel( ) << endl;
-        declareAuxVariablesRec( box->getElements( ), true );
-        out << "// END of " << box->getLabel( ) << endl;
-        for( int i = 0; i < box->outputSize( ); ++i ) {
-          QNEPort *port = box->outputMap.at( i );
-          varMap[ box->output( i ) ] = otherPortName( port );
-        }
-      }
+      throw std::runtime_error( ERRORMSG( QString( "Element type not supported : %1" ).arg(
+                                            elm->objectName( ) ).toStdString( ) ) );
+      // FIXME ARRUMAR BOX para Arduino
+//      Box *box = qgraphicsitem_cast< Box* >( elm );
+//      if( box ) {
+//        out << "// " << box->getLabel( ) << endl;
+//        declareAuxVariablesRec( box->getElements( ), true );
+//        out << "// END of " << box->getLabel( ) << endl;
+//        for( int i = 0; i < box->outputSize( ); ++i ) {
+//          QNEPort *port = box->outputMap.at( i );
+//          varMap[ box->output( i ) ] = otherPortName( port );
+//        }
+//      }
     }
     else {
       QString varName = QString( "aux_%1_%2" ).arg( clearString( elm->objectName( ) ) ).arg( globalCounter++ );
@@ -213,24 +217,28 @@ void CodeGenerator::setup( ) {
 void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms ) {
   for( GraphicElement *elm : elms ) {
     if( elm->elementType( ) == ElementType::BOX ) {
-      Box *box = qgraphicsitem_cast< Box* >( elm );
-      out << "    // " << box->getLabel( ) << endl;
-      for( int i = 0; i < box->inputSize( ); ++i ) {
-        QNEPort *port = box->input( i );
-        QNEPort *otherPort = port->connections( ).first( )->otherPort( port );
-        QString value = highLow( port->defaultValue( ) );
-        if( !varMap[ otherPort ].isEmpty( ) ) {
-          value = varMap[ otherPort ];
-        }
-        out << "    " << varMap[ box->inputMap.at( i ) ] << " = " << value << ";" << endl;
-      }
-      QVector< GraphicElement* > boxElms = box->getElements( );
-      if( boxElms.isEmpty( ) ) {
-        continue;
-      }
-      boxElms = SimulationController::sortElements( boxElms );
-      assignVariablesRec( boxElms );
-      out << "    // End of " << box->getLabel( ) << endl;
+      throw std::runtime_error( ERRORMSG( QString( "Element type not supported : %1" ).arg(
+                                            elm->objectName( ) ).toStdString( ) ) );
+      // FIXME refazer gerador de arduino da Box
+//      Box *box = qgraphicsitem_cast< Box* >( elm );
+//      out << "    // " << box->getLabel( ) << endl;
+//      for( int i = 0; i < box->inputSize( ); ++i ) {
+//        QNEPort *port = box->input( i );
+//        QNEPort *otherPort = port->connections( ).first( )->otherPort( port );
+//        QString value = highLow( port->defaultValue( ) );
+//        if( !varMap[ otherPort ].isEmpty( ) ) {
+//          value = varMap[ otherPort ];
+//        }
+//        out << "    " << varMap[ box->inputMap.at( i ) ] << " = " << value << ";" << endl;
+//      }
+//      QVector< GraphicElement* > boxElms = box->getElements( );
+//      if( boxElms.isEmpty( ) ) {
+//        continue;
+//      }
+//      bool notSeq;
+//      boxElms = Util::sortElements( boxElms, notSeq );
+//      assignVariablesRec( boxElms );
+//      out << "    // End of " << box->getLabel( ) << endl;
     }
     else if( elm->inputs( ).isEmpty( ) || elm->outputs( ).isEmpty( ) ) {
       continue;
@@ -374,7 +382,7 @@ void CodeGenerator::assignVariablesRec( const QVector< GraphicElement* > &elms )
           break;
           default:
           throw std::runtime_error( ERRORMSG( QString( "Element type not supported : %1" ).arg(
-                                      elm->objectName( ) ).toStdString() ) );
+                                                elm->objectName( ) ).toStdString( ) ) );
           break;
       }
     }

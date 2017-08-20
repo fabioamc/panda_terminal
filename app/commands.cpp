@@ -155,8 +155,7 @@ QList< QGraphicsItem* > loadItems( QByteArray &itemData,
    * We will store one additional information: The element IDs!
    */
   QList< QGraphicsItem* > items =
-    SerializationFunctions::deserialize( editor,
-                                         dataStream,
+    SerializationFunctions::deserialize( dataStream,
                                          version,
                                          GlobalProperties::currentFile,
                                          portMap );
@@ -417,7 +416,7 @@ SplitCommand::SplitCommand( QNEConnection *conn, QPointF point, Editor *aEditor,
     parent ) {
   /* TODO Reverse Split command... */
   Scene *customScene = aEditor->getScene( );
-  GraphicElement *node = ElementFactory::buildElement( ElementType::NODE, aEditor );
+  GraphicElement *node = ElementFactory::buildElement( ElementType::NODE );
   QNEConnection *conn2 = ElementFactory::instance->buildConnection( );
 
   /* Align node to Grid */
@@ -466,7 +465,7 @@ void SplitCommand::redo( ) {
     ElementFactory::updateItemId( c2, c2_id );
   }
   if( !node ) {
-    node = ElementFactory::buildElement( ElementType::NODE, editor );
+    node = ElementFactory::buildElement( ElementType::NODE );
     ElementFactory::updateItemId( node, node_id );
   }
   if( c1 && c2 && elm1 && elm2 && node ) {
@@ -538,7 +537,7 @@ void MorphCommand::undo( ) {
   QVector< GraphicElement* > newElms = findElements( ids ).toVector( );
   QVector< GraphicElement* > oldElms( newElms.size( ) );
   for( int i = 0; i < ids.size( ); ++i ) {
-    oldElms[ i ] = ElementFactory::buildElement( types[ i ], editor );
+    oldElms[ i ] = ElementFactory::buildElement( types[ i ] );
   }
   transferConnections( newElms, oldElms );
   emit editor->circuitHasChanged( );
@@ -549,7 +548,7 @@ void MorphCommand::redo( ) {
   QVector< GraphicElement* > oldElms = findElements( ids ).toVector( );
   QVector< GraphicElement* > newElms( oldElms.size( ) );
   for( int i = 0; i < ids.size( ); ++i ) {
-    newElms[ i ] = ElementFactory::buildElement( newtype, editor );
+    newElms[ i ] = ElementFactory::buildElement( newtype );
   }
   transferConnections( oldElms, newElms );
   emit editor->circuitHasChanged( );
