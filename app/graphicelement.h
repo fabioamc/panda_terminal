@@ -127,15 +127,6 @@ public:
 
   virtual void setAudio( QString audio );
   virtual QString getAudio( );
-/*
- *  bool beingVisited( ) const;
- *  void setBeingVisited( bool beingVisited );
- */
-
-/*
- *  bool visited( ) const;
- *  void setVisited( bool visited );
- */
 
   bool isValid( );
 
@@ -157,8 +148,8 @@ public:
   virtual QString genericProperties( );
 
 
-  void updateLabel();
-  
+  void updateLabel( );
+
 protected:
   void setRotatable( bool rotatable );
   void setHasLabel( bool hasLabel );

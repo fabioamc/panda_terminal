@@ -13,9 +13,9 @@ CONFIG(debug, debug|release) {
 
 include($$PWD/app/element/element.pri)
 include($$PWD/app/logicelement/logicelement.pri)
+include($$PWD/app/arduino/arduino.pri)
 
 SOURCES += \
-    $$PWD/app/arduino/codegenerator.cpp \
     $$PWD/app/elementeditor.cpp \
     $$PWD/app/elementfactory.cpp \
     $$PWD/app/box.cpp \
@@ -50,7 +50,6 @@ SOURCES += \
 HEADERS  +=  \
     $$PWD/app/common.h \
     $$PWD/app/graphicsviewzoom.h \
-    $$PWD/app/arduino/codegenerator.h\
     $$PWD/app/box.h \
     $$PWD/app/boxnotfoundexception.h \
     $$PWD/app/commands.h \
@@ -118,3 +117,4 @@ QMAKE_CXXFLAGS += -Wl,-rpath,'${ORIGIN}/lib'
 #}
 
 QMAKE_CXXFLAGS_DEBUG += -DDEBUG=1 -Wall
+

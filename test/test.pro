@@ -11,7 +11,8 @@ SOURCES += \
     testcommands.cpp \
     testwaveform.cpp \
     testicons.cpp \
-    testlogicelements.cpp
+    testlogicelements.cpp \
+    testarduino.cpp
 
 HEADERS += \
     testelements.h \
@@ -20,6 +21,7 @@ HEADERS += \
     testcommands.h \
     testwaveform.h \
     testicons.h \
-    testlogicelements.h
+    testlogicelements.h \
+    testarduino.h
 
 DEFINES += CURRENTDIR=\\\"$$PWD\\\"

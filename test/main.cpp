@@ -1,3 +1,4 @@
+#include "testarduino.h"
 #include "testcommands.h"
 #include "testelements.h"
 #include "testfiles.h"
@@ -20,14 +21,16 @@ int main( int argc, char **argv ) {
   TestCommands testCommands;
   TestWaveForm testWf;
   TestIcons testIcons;
+  TestArduino testArduino;
   int status = 0;
-  status |= QTest::qExec( &testElements, argc, argv );
-  status |= QTest::qExec( &testLogicElements, argc, argv );
-  status |= QTest::qExec( &testSC, argc, argv );
-  status |= QTest::qExec( &testFiles, argc, argv );
-  status |= QTest::qExec( &testCommands, argc, argv );
-  status |= QTest::qExec( &testWf, argc, argv );
-  status |= QTest::qExec( &testIcons, argc, argv );
+//  status |= QTest::qExec( &testElements, argc, argv );
+//  status |= QTest::qExec( &testLogicElements, argc, argv );
+//  status |= QTest::qExec( &testSC, argc, argv );
+//  status |= QTest::qExec( &testFiles, argc, argv );
+//  status |= QTest::qExec( &testCommands, argc, argv );
+//  status |= QTest::qExec( &testWf, argc, argv );
+//  status |= QTest::qExec( &testIcons, argc, argv );
+  status |= QTest::qExec( &testArduino, argc, argv );
   if( status == false ) {
     std::cout << "All tests have passed!" << std::endl;
   }

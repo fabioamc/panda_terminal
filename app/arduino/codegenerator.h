@@ -12,8 +12,8 @@ public:
   QString varName;
   QNEPort *port;
   int portNbr;
-  MappedPin( GraphicElement *elm, QString pin, QString varName, QNEPort *port,
-             int portNbr = 0 ) : elm( elm ), pin( pin ), varName( varName ), port( port ), portNbr( portNbr ) {
+  MappedPin( GraphicElement *elm, QString pin, QString varName, QNEPort *port, int portNbr = 0 ) : elm( elm ),
+    pin( pin ), varName( varName ), port( port ), portNbr( portNbr ) {
   }
 
   MappedPin( ) {
@@ -35,7 +35,7 @@ private:
   QTextStream out;
   const QVector< GraphicElement* > elements;
   QVector< MappedPin > inputMap, outputMap;
-  QHash< QNEPort*, QString > varMap;
+  QMap< QNEPort*, QString > varMap;
   QVector< QString > availblePins;
   void setup( );
   void loop( );
@@ -43,7 +43,7 @@ private:
   void declareAuxVariablesRec( const QVector< GraphicElement* > &elms, bool isBox = false );
   void assignVariablesRec( const QVector< GraphicElement* > &elms );
   void assignLogicOperator( GraphicElement *elm );
-  QString otherPortName(QNEPort * port);
+  QString otherPortName( QNEPort *port );
 };
 
 #endif /* CODEGENERATOR_H */
