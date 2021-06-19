@@ -162,7 +162,7 @@ jobs:
 
     - name: Build
       run: |
-        QTDIR="/usr/local/opt/qt/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
+        QTDIR="/usr/local/opt/qt@5/" && PATH="${QTDIR}/bin:$PATH" && LDFLAGS=-L${QTDIR}/lib && CPPFLAGS=-I${QTDIR}/include;
         mkdir build
         cd build
         qmake ../WPanda.pro
