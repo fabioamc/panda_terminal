@@ -12,7 +12,7 @@ jobs:
 
 # === Ubuntu ===
   Ubuntu-Qt5:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     steps:
     - uses: actions/checkout@v3
@@ -25,6 +25,16 @@ jobs:
       with:
         version: 5.15.2
         modules: qtcharts
+        
+    - name: Install AppImage dependencies
+      run: |
+        sudo apt-get install libgstreamer-plugins-base1.0-0 libgstreamer-plugins-base1.0-dev 
+        sudo apt-get install libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0-dev libxcb-render-util0 libxcb-xinerama0
+
+    - name: Get linuxdeployqt
+      run: |
+        wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -P ~/
+        chmod +x ~/linuxdeployqt-continuous-x86_64.AppImage
 
     - name: Build
       run: |
@@ -34,12 +44,20 @@ jobs:
         make -j2
         cd test
         xvfb-run ./WPanda-test
+        
+    - name: Make WiredPanda AppImage
+      run: |
+        PATH=/home/runner/work/wiredpanda-testing/Qt/5.15.2/gcc_64/bin:$PATH
+        export PATH
+        cp installer/Linux/portable_files/wpanda.desktop build/app/wpanda.desktop
+        cp app/resources/wpanda.png build/app/wpanda.png
+        ~/linuxdeployqt-continuous-x86_64.AppImage build/app/wpanda -appimage 
 
-    - name: Deploy
+    - name: Upload WiredPanda AppImage
       uses: actions/upload-artifact@v3
       with:
-        name: 'WiRedPanda-Qt5-Ubuntu-glibc'
-        path: build/app/wpanda
+        name: WiredPanda Linux (64-bit) AppImage
+        path: WiRed_Panda*.AppImage
 
 # === Windows ===
   Windows-Qt5:
@@ -71,11 +89,13 @@ jobs:
         
     - name: Deploy WiRedPanda binary
       run : |
+        cp -r examples build\app\release
         cd build\app\release
         windeployqt --compiler-runtime wpanda.exe
         cp $env:Qt5_Dir\bin\libgcc_s_seh-1.dll .
         cp $env:Qt5_Dir\bin\libstdc++-6.dll .
-        cp $env:Qt5_Dir\bin\libwinpthread-1.dll .
+        cp $env:Qt5_Dir\bin\libwinpthread-1.dll . 
+        rm -r .\pch.h.gch\
         cd ..
         ren release wpanda
         
